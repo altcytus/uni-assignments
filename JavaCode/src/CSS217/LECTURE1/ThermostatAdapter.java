@@ -1,38 +1,52 @@
 package CSS217.LECTURE1;
+public class ThermostatAdapter implements SmartDevice {
+    private final LegacyThermostat thermostat;
 
-public class ThermostatAdapter  implements SmartDevice{
+    public ThermostatAdapter(LegacyThermostat thermostat) {
+        if (thermostat == null) {
+            throw new IllegalArgumentException("LegacyThermostat instance cannot be null");
+        }
+        this.thermostat = thermostat;
+    }
 
-    LegacyThermostat legacyThermostat =  new LegacyThermostat();
     @Override
     public void turnOn() {
-        legacyThermostat.rotateDial("MAX");
+        String state = thermostat.checkDial();
+        if ("IDLE".equals(state)) {
+            thermostat.rotateDial("LOW");
+        }
+        // Idempotent for 'LOW', 'MEDIUM', 'MAX'
     }
 
     @Override
     public void turnOff() {
-        legacyThermostat.rotateDial("IDLE");
+        thermostat.rotateDial("IDLE");
     }
 
     @Override
     public boolean isOn() {
-        String s =legacyThermostat.checkDial();
-        if(s.equals("IDLE")){
-            return false;
+        String state = thermostat.checkDial();
+        if (state == null) return false; // Fault Scenario B safeguard
+        switch (state) {
+            case "LOW":
+            case "MEDIUM":
+            case "MAX":
+                return true;
+            default:
+                return false; // Covers 'STUCK', 'OVERHEAT', '', etc.
         }
-        return true;
     }
 
     @Override
     public int getPowerPercent() {
-        String s =legacyThermostat.checkDial();
-        if(s.equals("IDLE")){
-            return 0;
-        } else if (s.equals("LOW")) {
-            return 30;
-        }else if (s.equals("MEDIUM")) {
-            return 70;
+        String state = thermostat.checkDial();
+        if (state == null) return -1; // Fault Scenario B: null dial state
+        switch (state) {
+            case "IDLE": return 0;
+            case "LOW": return 33;
+            case "MEDIUM": return 66;
+            case "MAX": return 100;
+            default: return -1; // Fault Scenario B: corrupted/illegal string sentinel
         }
-        return 100;
-
     }
 }

@@ -1,26 +1,45 @@
 package CSS217.LECTURE1;
 
 public class BulbAdapter implements SmartDevice {
-    LegacyBulb legacyBulb = new LegacyBulb();
+    private final LegacyBulb bulb;
+    private static final int K = 6;
+
+    public BulbAdapter(LegacyBulb bulb) {
+        if (bulb == null) {
+            throw new IllegalArgumentException("LegacyBulb instance cannot be null");
+        }
+        this.bulb = bulb;
+    }
 
     @Override
     public void turnOn() {
-        legacyBulb.setBrightness(100);
+        bulb.setBrightness(255);
     }
 
     @Override
     public void turnOff() {
-        legacyBulb.setBrightness(0);
+        bulb.setBrightness(0);
     }
 
     @Override
     public boolean isOn() {
-        return legacyBulb.hasPower();
+        if (!bulb.hasPower()) { // Fault Scenario A safeguard
+            return false;
+        }
+        return bulb.readBrightness() > 0;
     }
 
     @Override
     public int getPowerPercent() {
-        int p = legacyBulb.readBrightness();
-        return (int) Math.round(((double) p / 255.0) * 100);
+        if (!bulb.hasPower()) {
+            return 0;
+        }
+        int rawBrightness = bulb.readBrightness();
+        if (rawBrightness == 0) {
+            return 0;
+        }
+        int rawPercent = (rawBrightness * 100) / 255;
+        int calibratedPercent = rawPercent + K;
+        return Math.min(100, calibratedPercent);
     }
 }

@@ -1,40 +1,40 @@
 package CSS217.LECTURE1;
-import java.util.ArrayList;
+
 import java.util.List;
+
 public class MainTest {
     public static void main(String[] args) {
-        SmartDevice bulb = new BulbAdapter();
-        SmartDevice thermostat = new ThermostatAdapter();
+        LegacyBulb rawBulb = new LegacyBulb();
 
-        List<SmartDevice> deviceList = new ArrayList<>();
-        deviceList.add(bulb);
-        deviceList.add(thermostat);
+        LegacyBulb legacyBulb = new LegacyBulb();
+        LegacyThermostat legacyThermostat = new LegacyThermostat();
 
+        SmartDevice bulbAdapter = new BulbAdapter(legacyBulb);
+        SmartDevice thermostatAdapter = new ThermostatAdapter(legacyThermostat);
+
+        List<SmartDevice> deviceList = List.of(bulbAdapter, thermostatAdapter);
         ModernHub hub = new ModernHub(deviceList);
-        System.out.println("Initial Average Power: " + hub.calculateAveragePowerUsage() + "%");
-        System.out.println("Polymorphism");
+
+        System.out.println("=== 3. Polymorphic Activation");
         hub.activateAll();
-        for (SmartDevice device : deviceList) {
-            System.out.println(device.getClass().getSimpleName() +
-                    " " + device.isOn() +
-                    ", Power: " + device.getPowerPercent() + "%");
-        }
-        System.out.println("Average Power: " + hub.calculateAveragePowerUsage() + "%");
+        System.out.println("Bulb isOn: " + bulbAdapter.isOn() + ", Power: " + bulbAdapter.getPowerPercent() + "%");
+        System.out.println("Thermostat isOn: " + thermostatAdapter.isOn() + ", Power: " + thermostatAdapter.getPowerPercent() + "%");
 
+        System.out.println("=== 4. Average Power Usage Calculation ===");
+        double avgPower = hub.calculateAveragePowerUsage();
+        System.out.println("Hub Average Power (with K seed offset): " + avgPower + "%");
 
-        System.out.println("Testing Hardware Fault");
-
-        ((BulbAdapter) bulb).legacyBulb.breakFilament();
-        System.out.println("After filament break: " + bulb.isOn());
-        System.out.println("Average Power After Fault: " + hub.calculateAveragePowerUsage() + "%");
-
-        System.out.println("Emergency Shutdown");
+        System.out.println("=== 5. Emergency Shutdown Verification ===");
         hub.emergencyShutdown();
-        for (SmartDevice device : deviceList) {
-            System.out.println(device.getClass().getSimpleName() +
-                    " " + device.isOn() +
-                    ", Power: " + device.getPowerPercent() + "%");
-        }
-        System.out.println("Average Power After Emergency Shutdown: " + hub.calculateAveragePowerUsage() + "%");
+        System.out.println("After emergency shutdown -> Bulb isOn: " + bulbAdapter.isOn() +
+                ", Power: " + bulbAdapter.getPowerPercent() + "% (Raw brightness: " + legacyBulb.readBrightness() + ")");
+        System.out.println("After emergency shutdown -> Thermostat isOn: " + thermostatAdapter.isOn() +
+                ", Power: " + thermostatAdapter.getPowerPercent() + "% (Dial state: " + legacyThermostat.checkDial() + ")");
+
+        System.out.println("=== 6. Fault Injection & Defensive Testing ===");
+        legacyBulb.breakFilament();
+        legacyThermostat.rotateDial("STUCK");
+        System.out.println("Broken Bulb -> isOn: " + bulbAdapter.isOn() + ", Power: " + bulbAdapter.getPowerPercent() + "%");
+        System.out.println("Corrupted Dial -> isOn: " + thermostatAdapter.isOn() + ", Power: " + thermostatAdapter.getPowerPercent() + "%");
     }
 }

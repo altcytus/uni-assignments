@@ -1,3 +1,5 @@
+package CSS215;
+
 import java.util.*;
 
 public class BonusPoint {

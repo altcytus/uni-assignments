@@ -1,4 +1,4 @@
-package Lab1;
+package CSS215.LAB1;
 
 class Lab12{
     static SingleNode rotateList(SingleNode head, int k){

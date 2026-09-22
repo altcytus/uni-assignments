@@ -1,4 +1,4 @@
-package Lab1;
+package CSS215.LAB1;
 
 class Lab11{
     static Node reverseList(Node head){
@@ -25,6 +25,7 @@ class Lab11{
 
     public static void main(String[] args){
         Node head=new Node(1);
+
         head.next=new Node(2);
         head.next.prev=head;
 

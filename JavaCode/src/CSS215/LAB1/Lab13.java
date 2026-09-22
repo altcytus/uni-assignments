@@ -1,4 +1,4 @@
-package Lab1;
+package CSS215.LAB1;
 
 class Lab13{
     public static void main(String[] args){
@@ -24,14 +24,15 @@ class StackNode{
             this.next = null;
         }
     }
-
-
     Node top;
     int size;
+
+
     StackNode(){
         this.size = 0;
         this.top = null;
     }
+
     void push(int data){
         Node newNode = new Node(data);
         newNode.next = top;
@@ -42,6 +43,7 @@ class StackNode{
     int pop(){
         if(isEmpty()){
             System.out.println("Stack is empty");
+            System.exit(-1);
         }
         int data = top.data;
         top = top.next;
@@ -52,6 +54,7 @@ class StackNode{
     int peek(){
         if(isEmpty()){
             System.out.println("Stack is empty");
+            System.exit(-1);
         }
         return top.data;
     }

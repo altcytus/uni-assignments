@@ -1,4 +1,4 @@
-package CSS215;
+package CSS215.Bonus;
 
 import java.util.*;
 
@@ -33,12 +33,12 @@ public class BonusPoint {
         s = 1;
       }
       for (int digit = s; digit <= 9; digit++) {
-        int lineCost = segment[digit] - segment[1];
-        int remainingK = k - lineCost;
-        int remainingDigits = n - i - 1;
-        if (remainingK >= 0 && remainingK <= remainingDigits * 5) {
+        int line = segment[digit] - segment[1];
+        int rK = k - line;
+        int rD = n - i - 1;
+        if (rK >= 0 && rK <= rD * 5) {
           list1.set(i, digit);
-          k = remainingK;
+          k = rK;
           break;
         }
       }
@@ -52,12 +52,12 @@ public class BonusPoint {
     for (int i = 0; i < n; i++) {
       for (int digit = 9; digit >= 0; digit--) {
 
-        int linecost =segment[digit] - segment[1];
-        int remainingK=k- linecost;
-        int remainingDigits = n-(i+1);
-        if (remainingK >= 0 && remainingK <= remainingDigits*5) {
+        int line =segment[digit] - segment[1];
+        int rK =k- line;
+        int rD = n-(i+1);
+        if (rK >= 0 && rK <= rD *5) {
           list2.set(i, digit);
-          k = remainingK;
+          k = rK;
           break;
         }
       }

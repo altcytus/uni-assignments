@@ -20,6 +20,7 @@ public class Lab24Counting {
         for (int i = 1; i < frequency.length; i++) {
             frequency[i] = frequency[i - 1] + frequency[i];
         }
+
         int[] answer = new int[numbers.length];
         for (int i = 0; i < numbers.length; i++) {
             int index =--frequency[numbers[i]];
